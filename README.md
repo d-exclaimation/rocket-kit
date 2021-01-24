@@ -1,4 +1,4 @@
-# rocket-kit
+# rocket-rest-kit
 
 Simple REST-API Reusable module / kit with [`Rocket.rs`](https://github.com/SergioBenitez/Rocket)
 
