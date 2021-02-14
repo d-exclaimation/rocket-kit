@@ -7,6 +7,7 @@
 #[macro_use] extern crate rocket_contrib;
 mod db;
 mod model;
+mod config;
 use rocket_contrib::json::{Json, JsonValue};
 use std::collections::HashMap;
 use rocket::config::{Config, Environment, Value};
@@ -60,20 +61,9 @@ pub fn delete_handler(index: i64, conn: sql::MyPgDatabase) -> JsonValue {
 
 
 fn main() {
-    // Create a manual config environment
-    let mut database_config = HashMap::new();
-    let mut databases = HashMap::new();
-    database_config.insert("url", Value::from("postgres://postgres@localhost/restful"));
-    databases.insert("my_db", Value::from(database_config));
-
-    // Create the config for the http server
-    let config = Config::build(Environment::Development)
-        .extra("databases", databases)
-        .finalize()
-        .unwrap();
-
     // Launch rocket server
-    rocket::custom(config)
+    rocket::custom(config::setup_config())
         .attach(sql::MyPgDatabase::fairing())
-        .mount("/", routes![get_handler, get_all_handler, post_handler, put_handler, delete_handler]).launch();
+        .mount("/", routes![get_handler, get_all_handler, post_handler, put_handler, delete_handler])
+        .launch();
 }
